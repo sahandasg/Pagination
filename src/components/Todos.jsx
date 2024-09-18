@@ -1,17 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import useFetch from "../hooks/useFetch";
+import TodoItem from "./TodoItem";
 
 //bootstrap components
 import Pagination from "react-bootstrap/Pagination";
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
-import data from "bootstrap/js/src/dom/data";
+import Table from 'react-bootstrap/Table';
 
 function Todos(props) {
     const {data, loading, error} = useFetch("GET", 'todos/')
     const [show, setShow] = useState(true);
     const [page, setPage] = useState(1);
-    const [displayData , setDisplayData] = useState("");
+    const [displayData, setDisplayData] = useState("");
 
     let todoPerPage = 20;
     let paginationNumber = null
@@ -26,9 +27,9 @@ function Todos(props) {
         setPage(pageNumber);
     }
 
-    useEffect(()=>{
-       if (!loading) setDisplayData(data.slice(firstIndex, lastIndex))
-    },[page, loading])
+    useEffect(() => {
+        if (!loading) setDisplayData(data.slice(firstIndex, lastIndex))
+    }, [page, loading])
 
     return (
         <div className="w-75 d-flex flex-column justify-content-center align-items-center mt-5">
@@ -45,8 +46,23 @@ function Todos(props) {
                     </p>
                 </Alert>
             }
+            <Table striped bordered hover>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
 
-            <pre>{JSON.stringify(displayData, null, 2)}</pre>
+                {
+                    displayData && displayData.map(todo => (
+                        <TodoItem key={todo.id} {...todo} />
+                    ))
+                }
+                </tbody>
+            </Table>
             <Pagination>
                 {
                     paginationNumber && paginationNumber.map(item => (
